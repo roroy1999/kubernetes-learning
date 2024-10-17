@@ -7,7 +7,7 @@ version: '3.7'
 # {"auths":{},"credsStore":"","stackOrchestrator":"swarm"}
 services:
   todo-web-application:
-    image: in28min/todo-web-application-mysql:0.0.1-SNAPSHOT
+    image: robinroy1999/todo-web-application-mysql:0.0.1-SNAPSHOT
     #build:
       #context: .
       #dockerfile: Dockerfile
@@ -29,7 +29,7 @@ services:
       - "3306:3306"
     restart: always
     environment:
-      MYSQL_ROOT_PASSWORD: root
+#      MYSQL_ROOT_PASSWORD: root
       MYSQL_ROOT_PASSWORD: dummypassword 
       MYSQL_USER: todos-user
       MYSQL_PASSWORD: dummytodos
