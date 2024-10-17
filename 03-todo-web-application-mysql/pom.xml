@@ -130,7 +130,7 @@
 				</executions>
 				<configuration>
 					<!-- todo -->
-					<repository>in28min/${project.name}</repository>
+					<repository>robinroy1999/${project.name}</repository>
 					<tag>${project.version}</tag>
 					<skipDockerInfo>true</skipDockerInfo>
 				</configuration>
