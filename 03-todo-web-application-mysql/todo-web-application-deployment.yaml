@@ -36,9 +36,9 @@ spec:
             - name: RDS_PASSWORD
 #              value: dummytodos
               valueFrom:
-                configMapKeyRef:
+                secretKeyRef:
                   key: RDS_PASSWORD
-                  name: todo-web-application-config
+                  name: todo-web-application-secrets
             - name: RDS_PORT
 #              value: "3306"
               valueFrom:
