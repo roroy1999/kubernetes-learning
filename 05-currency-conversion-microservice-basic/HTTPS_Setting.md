@@ -1,3 +1,5 @@
+Reffer : https://cloud.google.com/dns/docs/set-up-dns-records-domain-name
+
 search in Google Cloud -> Load balancing
 
 under Load balancing -> select Load balancers Tab
