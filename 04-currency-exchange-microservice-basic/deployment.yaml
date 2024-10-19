@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -6,7 +6,7 @@ metadata:
   name: currency-exchange
   namespace: default
 spec:
-  replicas: 1 #CHANGE
+  replicas: 2 #CHANGE
   minReadySeconds: 45
   selector:
     matchLabels:
@@ -22,7 +22,7 @@ spec:
         app: currency-exchange
     spec:
       containers:
-      - image: in28min/currency-exchange:0.0.1-RELEASE #CHANGE
+      - image: robinroy1999/currency-exchange:0.0.1-RELEASE #CHANGE
         imagePullPolicy: IfNotPresent
         name: currency-exchange
         ports:
