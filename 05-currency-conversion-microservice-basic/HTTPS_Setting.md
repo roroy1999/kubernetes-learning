@@ -37,3 +37,41 @@ HTTP/3 (QUIC) negotiation : Automatic (default)
 
 -> outside click Save or Update
 
+
+### To CREATE STATIC EXTERNAL IP:
+
+search -> VPC networks
+
+on the right select -> IP addresses
+
+select -> Reserve External static IP address ->
+
+name : my-global-ip (give any name but remember it since same will be used in ingress)
+
+Network Service Tier : Premium
+
+IP version : IPv4
+
+Type : Regional(based on your availability need can also be global)
+
+Region : us-central1 (Iowa)
+
+Attached to : gke-robin-cluster-default-pool-dff86c35-84rf
+
+-> Reserve
+
+### Adding Global IP to Ingress:
+
+inside ingress add kubernetes.io/ingress.regional-static-ip-name: "my-global-ip" under annotation:
+
+ex: 
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gateway-ingress
+  annotations:
+    kubernetes.io/ingress.regional-static-ip-name: "my-global-ip"
+    
+- run-> kubectl apply -f ingress.yaml
+
+
