@@ -61,6 +61,7 @@ docker container run --publish 8000:8000 in28min/currency-exchange:0.0.1-SNAPSHO
 
 ### Cluster Auto Scaling
 
+######Cluster creation CMD with Auto Scaling Enabled :
 ```
 gcloud container clusters create example-cluster \
 --zone us-central1-a \
@@ -72,12 +73,19 @@ gcloud container clusters create example-cluster \
 
 #### Enable on Cluster
 
+###### during creation of cluster :
 ```
 gcloud container clusters create [CLUSTER_NAME] --enable-vertical-pod-autoscaling --cluster-version=1.14.7
+```
+######during updation of cluster :
+```
 gcloud container clusters update [CLUSTER-NAME] --enable-vertical-pod-autoscaling
 ```
 
 #### Configure VPA
+
+###### IMP : it is not sufficient to only Create Vertical Pod Auto Scaling , you also need to tie up the deployment with 
+###### VerticalPodAutoscaler(VPA)
 
 ```
 apiVersion: autoscaling.k8s.io/v1
