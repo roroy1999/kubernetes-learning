@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -22,7 +22,7 @@ spec:
         app: currency-conversion
     spec:
       containers:
-      - image: in28min/currency-conversion:0.0.2-RELEASE #CHANGE
+      - image: robinroy1999/currency-conversion:0.0.2-RELEASE #CHANGE
         imagePullPolicy: IfNotPresent
         name: currency-conversion
         env:
@@ -49,4 +49,4 @@ spec:
   selector:
     app: currency-conversion
   sessionAffinity: None #CHANGE
-  type: LoadBalancer
+  type: NodePort

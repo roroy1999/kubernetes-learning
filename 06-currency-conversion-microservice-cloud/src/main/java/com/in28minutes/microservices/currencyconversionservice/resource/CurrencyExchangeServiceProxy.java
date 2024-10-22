@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 //@FeignClient(name = "currency-exchange", url = "${CURRENCY_EXCHANGE_URI:http://localhost}:8000")//http://currency-exchange
 //@FeignClient(name = "currency-exchange", url = "${CURRENCY_EXCHANGE_SERVICE_HOST:http://localhost}:8000")
 @FeignClient(name = "currency-exchange")//Kubernetes Service Name
-@RibbonClient(name = "currency-exchange")
+@RibbonClient(name = "currency-exchange")//added 
 public interface CurrencyExchangeServiceProxy {
 	@GetMapping("/currency-exchange/from/{from}/to/{to}")
 	public CurrencyConversionBean retrieveExchangeValue(@PathVariable("from") String from,
