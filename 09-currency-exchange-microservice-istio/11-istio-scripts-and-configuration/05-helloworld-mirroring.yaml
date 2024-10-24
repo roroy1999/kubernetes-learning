@@ -1,5 +1,5 @@
 apiVersion: networking.istio.io/v1alpha3
-kind: VirtualService
+kind: VirtualService #VirtualService
 metadata:
   name: helloworld-virtual-services
 spec:
@@ -20,6 +20,7 @@ spec:
         host: hello-world-rest-api
         subset: v2
 ---
+# DestinationRule
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
 metadata:
