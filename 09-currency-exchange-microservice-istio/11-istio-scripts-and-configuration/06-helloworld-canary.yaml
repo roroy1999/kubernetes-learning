@@ -15,11 +15,11 @@ spec:
         - destination:
             host: hello-world-rest-api
             subset: v1
-          weight: 0
+          weight: 80
         - destination:
             host: hello-world-rest-api
             subset: v2
-          weight: 100
+          weight: 20
 ---
 apiVersion: networking.istio.io/v1alpha3
 kind: DestinationRule
