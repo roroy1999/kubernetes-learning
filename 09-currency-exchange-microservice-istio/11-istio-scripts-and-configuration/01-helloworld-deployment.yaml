@@ -14,7 +14,7 @@ spec:
 #    rollingUpdate:
 #      maxSurge: 25%
 #      maxUnavailable: 25%
-    type: Recreate
+    type: Recreate # Rolling Update Strategy
   template:
     metadata:
       labels:
