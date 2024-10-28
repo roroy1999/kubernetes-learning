@@ -82,7 +82,19 @@ kubectl apply -f 05-currency-conversion-microservice-basic/deployment.yaml
 - Check out sample application - https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/2048/2048-ingress.yaml
 
 ```
-kubectl apply -f 05-currency-conversion-microservice-basic/ingress_aws.yaml
+1] eksctl utils associate-iam-oidc-provider --region us-east-1 --cluster robin-cluster --approve
+
+2] aws iam create-policy --policy-name AWSLoadBalancerControllerAdditionalIAMPolicy --policy-document https://raw.githubusercontent.com/kubernetes-sigs/aws-load-balancer-controller/main/docs/install/iam_policy.json
+
+3] check if policy is created : aws iam list-policies --query "Policies[?PolicyName=='AWSLoadBalancerControllerAdditionalIAMPolicy']"
+
+4] Re-Attach the Policy: Once the policy is confirmed to exist, retry the attach command: aws iam attach-role-policy --role-name eks-alb-ingress-role --policy-arn arn:aws:iam::820242913773:policy/AWSLoadBalancerControllerAdditionalIAMPolicy
+
+Note : trust-policy.json is present under Kubernetes Learning
+
+5] if role dont exist create one : aws iam create-role --role-name eks-alb-ingress-role --assume-role-policy-document file://trust-policy.json
+
+6] kubectl apply -f 05-currency-conversion-microservice-basic/ingress_aws.yaml
 ```
 
 ### Adding Application Insights
