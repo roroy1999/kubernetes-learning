@@ -1,4 +1,4 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
@@ -6,6 +6,9 @@ metadata:
   name: mysql
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: mysql
   strategy:
     type: Recreate
   template:
@@ -25,7 +28,7 @@ spec:
           value: todos-user
         image: mysql:5.7
         args:
-          - "--ignore-db-dir=lost+found" #CHANGE
+        - "--ignore-db-dir=lost+found" #CHANGE
         name: mysql
         ports:
         - containerPort: 3306
