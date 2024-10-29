@@ -3,22 +3,22 @@ kind: Ingress
 metadata:
   name: gateway-ingress
   annotations:
-    kubernetes.io/ingress.class: "alb" # Ensures the ALB ingress controller is used
-    alb.ingress.kubernetes.io/scheme: internet-facing # Specifies an external ALB
-    alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}]' # Sets HTTP port 80 for ALB
-    alb.ingress.kubernetes.io/target-type: ip # ALB uses IP targets, required in most setups
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    #nginx.ingress.kubernetes.io/rewrite-target: /$2 # couses redirect issues
 spec:
   rules:
   - http:
       paths:
-      - path: /currency-exchange/*
-        pathType: Prefix # Specifies the path type, required in networking.k8s.io/v1
+      - path: /currency-exchange
+        pathType: Prefix
         backend:
           service:
             name: currency-exchange
             port:
               number: 8000
-      - path: /currency-conversion/*
+      - path: /currency-conversion
         pathType: Prefix
         backend:
           service:

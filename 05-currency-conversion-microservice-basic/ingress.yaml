@@ -3,7 +3,9 @@ kind: Ingress
 metadata:
   name: gateway-ingress
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /
+    nginx.ingress.kubernetes.io/ssl-redirect: "true"
+    kubernetes.io/ingress.class: 'nginx'
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
   - http:
@@ -14,7 +16,7 @@ spec:
           service:
             name: currency-exchange
             port:
-              number: 8000          
+              number: 8000
       - path: /currency-conversion
         pathType: Prefix
         backend:

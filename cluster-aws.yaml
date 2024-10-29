@@ -1,0 +1,19 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: robin-cluster
+  region: us-east-1
+
+nodeGroups:
+- name: robin-cluster-node-group
+  instanceType: mixed
+  instancesDistribution:
+    instanceTypes: ["t2.medium"] # List of instance types
+    #maxPrice: 0.05 # Maximum price for spot instances, in USD
+    onDemandBaseCapacity: 0
+    spotInstancePools: 2 # Number of spot instance pools
+  minSize: 1
+  maxSize: 7
+  desiredCapacity: 2
+  volumeSize: 20
