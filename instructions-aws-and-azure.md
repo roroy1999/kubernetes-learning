@@ -21,6 +21,13 @@ Help for eksctl https://eksctl.io/
 
 ```
 eksctl create cluster --name in28minutes-cluster --nodegroup-name in28minutes-cluster-node-group  --node-type t2.medium --nodes 3 --nodes-min 3 --nodes-max 7 --managed --asg-access
+
+OR 
+
+RECOMENDED : 
+cd kubernetes-learning folder and run :
+eksctl create cluster -f cluster-aws.yaml
+aws eks update-kubeconfig --region us-east-1 --name robin-cluster
 ```
 
 If you get this error
