@@ -140,9 +140,26 @@ az group create --name kubernetes-resource-group --location westeurope
 
 az ad sp create-for-rbac --skip-assignment --name kubernetes-cluster-service-principal
 
-az aks create --name in28minutes-cluster --node-count 4 --enable-addons monitoring --resource-group kubernetes-resource-group --vm-set-type VirtualMachineScaleSets --load-balancer-sku standard --enable-cluster-autoscaler  --min-count 1 --max-count 7  --generate-ssh-keys --service-principal <<appId>> --client-secret  <<password>>
+az aks create --name robin-cluster --node-count 4 --enable-addons monitoring --resource-group kubernetes-resource-group --vm-set-type VirtualMachineScaleSets --load-balancer-sku standard --enable-cluster-autoscaler  --min-count 1 --max-count 7  --generate-ssh-keys --service-principal <<appId>> --client-secret  <<password>>
 
-az aks get-credentials --resource-group kubernetes-resource-group --name in28minutes-cluster
+if you see error saying : The subscription is not registered to use namespace 'Microsoft.ContainerService'
+run :
+* az provider register --namespace Microsoft.ContainerService
+* az provider show -n Microsoft.ContainerService
+* az provider register --namespace Microsoft.OperationsManagement
+* https://learn.microsoft.com/en-us/answers/questions/2088453/(errcode-insufficientvcpuquota)-insufficient-regio
+* Go to Subscription -> Free Tier -> Resource providers -> register Microsoft.Compute
+* Go to Subscription -> Free Tier -> Resource providers -> Usage + quotas : you can see how many vcpu you have for the region
+
+if You have less VCPU:
+*go to Resource groups and create resource group with Australia Central and use that resource group in cluster creation
+* if this error : Insufficient regional vcpu quota left for location australiacentral. left regional vcpu quota 4, requested quota 8
+* modify the node to 1
+ex: 
+az aks create --name robin-cluster --node-count 4 --enable-addons monitoring --resource-group australial-resource-group --vm-set-type VirtualMachineScaleSets --load-balancer-sku standard --enable-cluster-autoscaler  --min-count 1 --max-count 7  --generate-ssh-keys --service-principal 1f9b64ae-****-****-****-************ --client-secret  _N78Q******************_****
+
+
+az aks get-credentials --resource-group australial-resource-group --name robin-cluster
 ```
 
 ### Deploying Basic Applications
@@ -186,11 +203,36 @@ kubectl apply -f 05-currency-conversion-microservice-basic/deployment.yaml
 
 Install Ingress Controller
 ```
-helm repo add stable https://kubernetes-charts.storage.googleapis.com/
+kubectl create serviceaccount nginx-ingress-controller
+kubectl create clusterrolebinding nginx-ingress-controller --clusterrole=cluster-admin --serviceaccount=default:nginx-ingress-controller
+kubectl create namespace ingress-nginx
 
-helm install stable/nginx-ingress --namespace default --set controller.replicaCount=1 --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux --generate-name
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx 
+helm repo update
 
-kubectl get service -l app=nginx-ingress
+helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"="<Your Resurce Group>" --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"="true"
+
+ex:
+helm install nginx-ingress ingress-nginx/ingress-nginx --namespace ingress-nginx --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-resource-group"="australial-resource-group" --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-load-balancer-internal"="true"
+
+kubectl get pods -n ingress-nginx
+NAME                                                      READY   STATUS    RESTARTS   AGE
+nginx-ingress-ingress-nginx-controller-64c8ffc67f-2b6vl   1/1     Running   0          34s
+
+kubectl get service  -n ingress-nginx
+NAME                                               TYPE           CLUSTER-IP     EXTERNAL-IP   PORT(S)                      AGE
+nginx-ingress-ingress-nginx-controller             LoadBalancer   10.0.40.176    10.224.0.5    80:31746/TCP,443:30443/TCP   44s
+nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.187.221   <none>        443/TCP                      44s
+----------------
+Note :
+sometime if your ingress is still showing PENDING on EXTERNAL IP,then you need grant permision to your regional group
+az role assignment create --assignee <service-principal-id> --role "Network Contributor" --scope /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>
+
+ex: Error syncing load balancer: failed to ensure load balancer: Retriable: false, RetryAfter: 0s, HTTPStatusCode: 403, RawError: {"error":{"code":"AuthorizationFailed","message":"The client '4ed3***-****-****-****-********' with object id '4ed3***-****-****-****-********' does not have authorization to perform action 'Microsoft.Network/publicIPAddresses/read' over scope '/subscriptions/9e******-****-****-****-************/resourceGroups/australial-resource-group/providers/Microsoft.Network' or the scope is invalid. If access was recently granted, please refresh your credentials."}}
+
+This above error was found in when i went to service and Ingress -> clicked on service : nginx-ingress-ingress-nginx-controller ->
+inside click events, if you see the above error then grant the permision
+-----------------
 ```
 
 More details - https://docs.microsoft.com/en-us/azure/aks/ingress-tls
@@ -198,6 +240,19 @@ More details - https://docs.microsoft.com/en-us/azure/aks/ingress-tls
 Setup Ingress
 ```
 kubectl apply -f 05-currency-conversion-microservice-basic/ingress_azure.yaml
+
+kubectl get ingress
+NAME              CLASS    HOSTS   ADDRESS      PORTS   AGE
+gateway-ingress   <none>   *       10.224.0.5   80      54s
+
+If URL is Not Hitting then debug
+kubectl get pods -n ingress-nginx
+kubectl logs -n ingress-nginx nginx-ingress-ingress-nginx-controller-64c8ffc67f-59jn2
+
+For EXTERNAL ADRESS not working Issue run: 
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
+From this Doc
+https://kubernetes.github.io/ingress-nginx/deploy/#azure
 ```
 ### Exploring Cluster Auto Scaler
 
@@ -217,5 +272,5 @@ kubectl delete svc service-name
 
 Delete the cluster
 ```
-az aks delete --name in28minutes-cluster --resource-group kubernetes-resource-group
+az aks delete --name robin-cluster --resource-group kubernetes-resource-group
 ```
