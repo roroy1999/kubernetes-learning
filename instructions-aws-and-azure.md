@@ -226,9 +226,10 @@ nginx-ingress-ingress-nginx-controller-admission   ClusterIP      10.0.187.221  
 ----------------
 Note :
 sometime if your ingress is still showing PENDING on EXTERNAL IP,then you need grant permision to your regional group
-az role assignment create --assignee <service-principal-id> --role "Network Contributor" --scope /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>
+* az role assignment create --assignee <service-principal-id> --role "Network Contributor" --scope /subscriptions/<subscription-id>/resourceGroups/<resource-group-name>
 
-ex: Error syncing load balancer: failed to ensure load balancer: Retriable: false, RetryAfter: 0s, HTTPStatusCode: 403, RawError: {"error":{"code":"AuthorizationFailed","message":"The client '4ed3***-****-****-****-********' with object id '4ed3***-****-****-****-********' does not have authorization to perform action 'Microsoft.Network/publicIPAddresses/read' over scope '/subscriptions/9e******-****-****-****-************/resourceGroups/australial-resource-group/providers/Microsoft.Network' or the scope is invalid. If access was recently granted, please refresh your credentials."}}
+ex: 
+* Error syncing load balancer: failed to ensure load balancer: Retriable: false, RetryAfter: 0s, HTTPStatusCode: 403, RawError: {"error":{"code":"AuthorizationFailed","message":"The client '4ed3***-****-****-****-********' with object id '4ed3***-****-****-****-********' does not have authorization to perform action 'Microsoft.Network/publicIPAddresses/read' over scope '/subscriptions/9e******-****-****-****-************/resourceGroups/australial-resource-group/providers/Microsoft.Network' or the scope is invalid. If access was recently granted, please refresh your credentials."}}
 
 This above error was found in when i went to service and Ingress -> clicked on service : nginx-ingress-ingress-nginx-controller ->
 inside click events, if you see the above error then grant the permision
@@ -246,13 +247,13 @@ NAME              CLASS    HOSTS   ADDRESS      PORTS   AGE
 gateway-ingress   <none>   *       10.224.0.5   80      54s
 
 If URL is Not Hitting then debug
-kubectl get pods -n ingress-nginx
-kubectl logs -n ingress-nginx nginx-ingress-ingress-nginx-controller-64c8ffc67f-59jn2
+* kubectl get pods -n ingress-nginx
+* kubectl logs -n ingress-nginx nginx-ingress-ingress-nginx-controller-64c8ffc67f-59jn2
 
 For EXTERNAL ADRESS not working Issue run: 
-kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
-From this Doc
-https://kubernetes.github.io/ingress-nginx/deploy/#azure
+* kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v1.12.0-beta.0/deploy/static/provider/cloud/deploy.yaml
+* From this Doc
+* https://kubernetes.github.io/ingress-nginx/deploy/#azure
 ```
 ### Exploring Cluster Auto Scaler
 
@@ -272,5 +273,5 @@ kubectl delete svc service-name
 
 Delete the cluster
 ```
-az aks delete --name robin-cluster --resource-group kubernetes-resource-group
+az aks delete --name robin-cluster --resource-group australial-resource-group
 ```
