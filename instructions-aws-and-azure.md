@@ -105,8 +105,7 @@ kubectl apply -f 05-currency-conversion-microservice-basic/ingress_aws.yaml
 
 ### Exploring Cluster Auto Scaler
 
-- https://docs.aws.amazon.com/eks/latest/userguide/cluster-autoscaler.html
-
+- https://katharharshal1.medium.com/kubernetes-cluster-autoscaling-ca-using-aws-eks-4aab8c89f9a1
 Testing auto scaler
 ```
 kubectl create deployment autoscaler-demo --image=nginx
@@ -205,7 +204,7 @@ kubectl apply -f 05-currency-conversion-microservice-basic/ingress_azure.yaml
 Testing auto scaler
 ```
 kubectl create deployment autoscaler-demo --image=nginx
-kubectl scale deployment autoscaler-demo --replicas=5000
+kubectl scale deployment autoscaler-demo --replicas=50
 ```
 
 ### Clean up the cluster
